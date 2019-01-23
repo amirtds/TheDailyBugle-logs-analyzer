@@ -1,4 +1,5 @@
 import psycopg2 #importing postgresql lib from connecting to DB
+import datetime
 
 class Analyzer:
     def __init__(self, DB_NAME):
@@ -37,6 +38,7 @@ class Analyzer:
         print "Third most Popular article is\n '{}' -- {} Views".format(
             self.results[2][0],int(self.results[2][1])
             )
+
     # get most popular authors, we find them based on the most popular articles
     def get_top_authors(self):
         # this query return most popualr authors based on their articles views
@@ -58,7 +60,26 @@ class Analyzer:
             print "############################################################"
             print "{} -- {} Views".format(author, views)
 
-
+    def get_evil_day(self):
+        self.query = '''
+        SELECT AllRequests.date,
+        (OnlyErrors.errors * 100.00)/AllRequests.requets
+        AS ErrorsPercentage
+        FROM (SELECT CAST(time AS date) AS date ,
+        COUNT(*) as requets FROM log GROUP BY date) AllRequests
+        LEFT JOIN (SELECT CAST(time AS date) AS errorsdate,
+        COUNT(*) AS errors FROM log WHERE status LIKE '4%'
+        OR status LIKE '5%' GROUP BY errorsdate order by errors ) OnlyErrors
+        ON (AllRequests.date = OnlyErrors.errorsdate)
+        ORDER BY ErrorsPercentage desc;'''
+        self.cursor = self.connection.cursor()
+        self.cursor.execute(self.query)
+        self.results = self.cursor.fetchall()
+        print "\n################## Days Error went over 1% ##################"
+        for date, percentage in self.results:
+            if percentage > 1 :
+                print date.strftime("%b %d, %Y"), "--", "%.2f" % percentage
+                print "############################################################"
 # create an instance of Analyzer
 analyzer = Analyzer('news')
 # stablish a connection to news database
@@ -67,3 +88,5 @@ analyzer.get_connection()
 analyzer.get_top_articles()
 # run get_top_authors method
 analyzer.get_top_authors()
+# run get_top_authors method
+analyzer.get_evil_day()
