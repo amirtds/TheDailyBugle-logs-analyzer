@@ -1,5 +1,8 @@
-import psycopg2 #importing postgresql lib from connecting to DB
+#!/usr/bin/env python
+
+import psycopg2  # importing postgresql lib from connecting to DB
 import datetime
+
 
 class Analyzer:
     def __init__(self, DB_NAME):
@@ -18,7 +21,6 @@ class Analyzer:
         SELECT articles.title, count(*) as num
         FROM log
         JOIN articles ON log.path = concat('/article/', articles.slug)
-        WHERE log.path like '/article/%'
         GROUP BY articles.title
         ORDER BY num DESC limit 3;'''
         # create a cursor and execute the query
@@ -28,15 +30,15 @@ class Analyzer:
         # print our top 3 articles with their views
         print "\n###################### TOP 3 ARTICLES ######################"
         print "Most Popular article is\n '{}' -- {} Views".format(
-            self.results[0][0],int(self.results[0][1])
+            self.results[0][0], int(self.results[0][1])
             )
-        print "############################################################"
+        print("#"*60)
         print "Second most Popular article is\n '{}' -- {} Views".format(
-            self.results[1][0],int(self.results[1][1])
+            self.results[1][0], int(self.results[1][1])
             )
-        print "############################################################"
+        print("#"*60)
         print "Third most Popular article is\n '{}' -- {} Views".format(
-            self.results[2][0],int(self.results[2][1])
+            self.results[2][0], int(self.results[2][1])
             )
 
     # get most popular authors, we find them based on the most popular articles
@@ -44,20 +46,20 @@ class Analyzer:
         # this query return most popualr authors based on their articles views
         self.query = '''
         SELECT authors.name, count(articles.title) as num
-    	FROM log
-    	JOIN articles ON log.path = concat('/article/', articles.slug)
-    	left join authors on articles.author = authors.id
-    	WHERE log.path like '/article/%'
-    	GROUP BY authors.name
-    	ORDER BY num DESC;'''
+        FROM log
+        JOIN articles ON log.path = concat('/article/', articles.slug)
+        left join authors on articles.author = authors.id
+        WHERE log.path like '/article/%'
+        GROUP BY authors.name
+        ORDER BY num DESC;'''
         # create a cursor and execute the query
         self.cursor = self.connection.cursor()
         self.cursor.execute(self.query)
         self.results = self.cursor.fetchall()
         # print our top 3 articles with their views
         print "\n###################### TOP AUTHORS ######################"
-        for author,views in self.results:
-            print "############################################################"
+        for author, views in self.results:
+            print("#"*60)
             print "{} -- {} Views".format(author, views)
 
     def get_evil_day(self):
@@ -71,31 +73,40 @@ class Analyzer:
         COUNT(*) AS errors FROM log WHERE status LIKE '4%'
         OR status LIKE '5%' GROUP BY errorsdate order by errors ) OnlyErrors
         ON (AllRequests.date = OnlyErrors.errorsdate)
+        WHERE (OnlyErrors.errors * 100.00)/AllRequests.requets >= 1
         ORDER BY ErrorsPercentage desc;'''
         self.cursor = self.connection.cursor()
         self.cursor.execute(self.query)
         self.results = self.cursor.fetchall()
         print "\n################## Days Error went over 1% ##################"
         for date, percentage in self.results:
-            if percentage > 1 :
-                print date.strftime("%b %d, %Y"), "--", "%.2f" % percentage
-                print "############################################################"
+            if percentage > 1:
+                print('{:%B %d, %Y} -- {:.2f}%'.format(date, percentage))
+                print("#"*60)
+
     def get_close_connection(self):
         self.connection.close()
 
-try:
-    # create an instance of Analyzer
-    analyzer = Analyzer('news')
-    # stablish a connection to news database
-    analyzer.get_connection()
-    # run get_top_articles method
-    analyzer.get_top_articles()
-    # run get_top_authors method
-    analyzer.get_top_authors()
-    # run get_top_authors method
-    analyzer.get_evil_day()
-    # close the connection
-    analyzer.get_close_connection()
-except Exception as e:
-    analyzer.get_close_connection()
-    print e.message, e.args
+
+def main():
+    """Generate Report."""
+    try:
+        # create an instance of Analyzer
+        analyzer = Analyzer('news')
+        # stablish a connection to news database
+        analyzer.get_connection()
+        # run get_top_articles method
+        analyzer.get_top_articles()
+        # run get_top_authors method
+        analyzer.get_top_authors()
+        # run get_top_authors method
+        analyzer.get_evil_day()
+        # close the connection
+        analyzer.get_close_connection()
+    except Exception as e:
+        analyzer.get_close_connection()
+        print e.message, e.args
+
+
+if __name__ == '__main__':
+    main()
