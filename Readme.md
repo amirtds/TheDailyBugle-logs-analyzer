@@ -8,6 +8,7 @@ The Daily Bugle Logs Analysis is command line application using `Python 2.7` and
 
 1. Create new virtual environment for this project
   + `virtualenv TheDailyBugle`
+  + activate the virtual environment `source TheDailyBugle/bin/activate`
   + go to **logs analysis** directory and run `pip install -r requirements.txt`
 2. you should already have PostgresSQL installed in your machine and having a database
 called `news` there. import unzipped of [newsdata.sql.zip](news_data/newsdata.sql.zip) to news database using
@@ -21,6 +22,8 @@ called `news` there. import unzipped of [newsdata.sql.zip](news_data/newsdata.sq
   >>> import psycopg2
   >>> connection = psycopg2.connect(dbname="news")
   ```
+4. go to the project directory and run `python log_analyzer.py`
+5. you see the answers to each question defined at `What is Logs Analysis` section
 
 ## What is Logs Analysis
 
