@@ -83,20 +83,19 @@ class Analyzer:
     def get_close_connection(self):
         self.connection.close()
 
-# create an instance of Analyzer
-analyzer = Analyzer('news')
-
-# stablish a connection to news database
-analyzer.get_connection()
-
-# run get_top_articles method
-analyzer.get_top_articles()
-
-# run get_top_authors method
-analyzer.get_top_authors()
-
-# run get_top_authors method
-analyzer.get_evil_day()
-
-# close the connection
-analyzer.get_close_connection()
+try:
+    # create an instance of Analyzer
+    analyzer = Analyzer('news')
+    # stablish a connection to news database
+    analyzer.get_connection()
+    # run get_top_articles method
+    analyzer.get_top_articles()
+    # run get_top_authors method
+    analyzer.get_top_authors()
+    # run get_top_authors method
+    analyzer.get_evil_day()
+    # close the connection
+    analyzer.get_close_connection()
+except Exception as e:
+    analyzer.get_close_connection()
+    print e.message, e.args
