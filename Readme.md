@@ -25,6 +25,34 @@ called `news` there. import unzipped of [newsdata.sql.zip](news_data/newsdata.sq
 4. go to the project directory and run `python log_analyzer.py`
 5. you see the answers to each question defined at `What is Logs Analysis` section
 
+You should see result like following
+
+```
+###################### TOP 3 ARTICLES ######################
+Most Popular article is
+ 'Candidate is jerk, alleges rival' -- 338647 Views
+############################################################
+Second most Popular article is
+ 'Bears love berries, alleges bear' -- 253801 Views
+############################################################
+Third most Popular article is
+ 'Bad things gone, say good people' -- 170098 Views
+
+###################### TOP AUTHORS ######################
+############################################################
+Ursula La Multa -- 507594 Views
+############################################################
+Rudolf von Treppenwitz -- 423457 Views
+############################################################
+Anonymous Contributor -- 170098 Views
+############################################################
+Markoff Chaney -- 84557 Views
+
+################## Days Error went over 1% ##################
+Jul 17, 2016 -- 2.26
+##################
+```
+
 ## What is Logs Analysis
 
 Logs Analysis connect to **The Daily Bugle** database and show us following information:
