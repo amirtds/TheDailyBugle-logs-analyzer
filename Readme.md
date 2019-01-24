@@ -60,3 +60,8 @@ Logs Analysis connect to **The Daily Bugle** database and show us following info
   + Most popular three articles of all time
   + The most popular article authors of all time (a sorted list with the most popular author at the top.)
   + On which days did more than 1% of requests lead to errors
+
+
+## Author
+
++ **SEYEDAMIR TADRISI** [AMIR](mailto:amirtds@gmail.com)
