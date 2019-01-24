@@ -9,14 +9,16 @@ class Analyzer:
         self.dbname = DB_NAME
         self.connection = None
 
-    # stablish connection to database named news
     def get_connection(self):
+        """ stablish connection to database named news """
         self.connection = psycopg2.connect(dbname=self.dbname)
 
-    # define func that returns 3 most popular articles
     def get_top_articles(self):
-        # this query return 3 most popualr articles
-        # join is based on partial string matching
+        """
+        define func that returns 3 most popular articles
+        the query return 3 most popualr articles
+        join is based on partial string matching
+        """
         self.query = '''
         SELECT articles.title, count(*) as num
         FROM log
@@ -41,9 +43,12 @@ class Analyzer:
             self.results[2][0], int(self.results[2][1])
             )
 
-    # get most popular authors, we find them based on the most popular articles
     def get_top_authors(self):
-        # this query return most popualr authors based on their articles views
+        """
+        get most popular authors, we find them based on
+        the most popular articles.the query return most popualr authors
+        based on their articles views
+        """
         self.query = '''
         SELECT authors.name, count(articles.title) as num
         FROM log
